@@ -113,7 +113,7 @@ module.exports = {
     new BusinessInfo(newBusiness).save()
       .then(function (saved) {
         console.log('Sucessfully saved => ', saved);
-        BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, res);
+        BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, res, false);
 
       })
       .catch(function (err) {
@@ -122,12 +122,11 @@ module.exports = {
       })
   },
    _addFromYelp: function(yelpData, res) {
-    console.log("THIS IS YELP DATA ---->", yelpData)
     var business = yelpData.businesses[0];
     var neighborhoodsArr = business.location.neighborhoods;
     var categoriesArr = [];
     for(var i = 0; i < business.categories.length; i++) {
-      categoriesArr.push(business.categories[i][0])
+      categoriesArr.push(business.categories[i][1])
     }
     //might need forloop over req.body.businesses is an array
     var newBusiness = {
@@ -143,16 +142,26 @@ module.exports = {
       phone: business.phone,
       is_closed: business.is_closed
     };
+    BusinessInfo.where({business_id: business.id}).fetch()
+      .then(function(foundBusiness) {
+        if(foundBusiness === null) {
+          new BusinessInfo(newBusiness).save()
+            .then(function (saved) {
+              console.log('Sucessfully saved => ', saved);
+              BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, res, true);
 
-    new BusinessInfo(newBusiness).save()
-      .then(function (saved) {
-        console.log('Sucessfully saved => ', saved);
-        BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, res);
-
+            })
+            .catch(function (err) {
+              console.error('Error: Saving to database', err);
+              res.status(500).send(err);
+            })
+        } else {
+          console.error('Business already added')
+        }
       })
       .catch(function (err) {
-        console.error('Error: Saving to database', err);
+        console.error('Error: Fetching BusinessInfo' , err);
         res.status(500).send(err);
-      })
+      });
   }
 };

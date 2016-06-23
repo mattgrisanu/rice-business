@@ -8,14 +8,14 @@ var BusinessInfoController = require('./BusinessInfoController.js');
     items: [{
       cuisine: "cafes",
       id: "unlessstring",
-      name: "La Belle Terre Bread French Bakery Cafe",
+      name: "The Beat Coffeehouse & Records",
       rating: 0.20202,
       userRated: false
     },
     {
       cuisine: "french",
       id: "unlessstring",
-      name: "Patisserie Manon",
+      name: "Sunrise Coffee",
       rating: 0.20202,
       userRated: false
     }]
@@ -30,17 +30,25 @@ module.exports = {
       recNames.push(recs[i].name)
     }
 
-    recNames.forEach(function(rec) {
-      Yelp.search({term: rec})
+    var saveToDb = function (arr, count) {
+      if (arr === undefined || count === arr.length) {
+        if (res !== undefined) {
+          res.status(201).send('Add success');
+        }
+        return;
+      }
+      Yelp.search({term: arr[count], location: 'Las Vegas'})
         .then(function(yelpData) {
           console.log('Got yelpData back from Yelp, sending to BusinessInfo To Add to Db')
           BusinessInfoController._addFromYelp(yelpData, res)
+          saveToDb(arr, ++count)
         })
         .catch(function(err) {
           console.error(err, 'Error from posting to Yelp Search Api')
           res.status(500).send(err);
         })
-    })
+    };
 
+    saveToDb(recNames, 0);
   }
 };
