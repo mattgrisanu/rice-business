@@ -1,5 +1,5 @@
 var BusinessInfo = require('./../models/BusinessInfoModel.js');
-var BusinessDetailController = require('./../controller/BusinessDetailController.js');
+var BusinessDetailController = require('./BusinessDetailController.js');
 
 /**
 assuming we yelp api searched returned json
@@ -90,6 +90,40 @@ module.exports = {
   addBusiness: function (req, res) {
     //assume req.body is looking and coming from yelp api
     var business = req.body.businesses[0];
+    var neighborhoodsArr = business.location.neighborhoods;
+    var categoriesArr = [];
+    for(var i = 0; i < business.categories.length; i++) {
+      categoriesArr.push(business.categories[i][0])
+    }
+    //might need forloop over req.body.businesses is an array
+    var newBusiness = {
+      business_id: business.id,
+      name: business.name,
+      address: business.location.display_address[0],
+      city: business.location.city,
+      state: business.location.state_code,
+      latitude: business.location.coordinate.latitude,
+      longitude: business.location.coordinate.longitude,
+      rating: business.rating,
+      review_count: business.review_count,
+      phone: business.phone,
+      is_closed: business.is_closed
+    };
+
+    new BusinessInfo(newBusiness).save()
+      .then(function (saved) {
+        console.log('Sucessfully saved => ', saved);
+        BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, res);
+
+      })
+      .catch(function (err) {
+        console.error('Error: Saving to database', err);
+        res.status(500).send(err);
+      })
+  },
+   _addFromYelp: function(yelpData, res) {
+    console.log("THIS IS YELP DATA ---->", yelpData)
+    var business = yelpData.businesses[0];
     var neighborhoodsArr = business.location.neighborhoods;
     var categoriesArr = [];
     for(var i = 0; i < business.categories.length; i++) {
