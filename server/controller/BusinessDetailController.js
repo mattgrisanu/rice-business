@@ -9,7 +9,7 @@ module.exports = {
     var queryObj = {
       business_id: req.query.business_id
     }
-    BusinessDetail.where(queryObj).fetch()
+    BusinessDetail.where(queryObj).fetchAll()
       .then(function (foundDetail) {
         res.status(200).send(foundDetail);
       })
