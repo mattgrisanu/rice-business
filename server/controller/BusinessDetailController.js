@@ -36,7 +36,6 @@ module.exports = {
 
       new BusinessDetail(newDetail).save()
         .then(function (saved) {
-          console.log('Successfull saved BusinessDetail', saved);
           saveToDb(arr, ++count, type);
         })
         .catch(function (err) {

@@ -5,6 +5,8 @@ var should = chai.should();
 var data = require('./test-data')
 var BusinessInfo = require('./../server/models/BusinessInfoModel');
 var BusinessDetail = require('./../server/models/BusinessDetailModel');
+var BusinessReview = require('./../server/models/BusinessReviewModel');
+var db = require('./../server/config/db')
 
 chai.use(chaiHttp);
 
@@ -37,17 +39,18 @@ describe('BusinessInfo Routes', function() {
         res.body.should.have.property('phone')
         res.body.should.have.property('address')
         res.body.should.have.property('rating')
+        res.body.rating.should.equal(4.5)
         done();
       })
   });
 });
+describe('BusinessDetail Routes', function() {
 
   it('should list a SINGLE restaurant category/neighborhood information on /api/business/detail GET', function(done) {
     chai.request(business)
       .get('/api/business/detail')
       .query({business_id: 'sunrise-coffee-las-vegas-3'})
       .end(function(err, res) {
-        console.log(res.body)
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body[0].should.have.property('type');
@@ -56,6 +59,41 @@ describe('BusinessInfo Routes', function() {
         done();
       })
   });
-  it('should list a SINGLE restaurant review/rating on /api/business/review GET');
+});
+describe('BusinessReview Routes', function() {
+  beforeEach(function(done) {
+
+    var newRating = {
+      business_id: 'sunrise-coffee-las-vegas-3',
+      user_id: 'katkat',
+      rating: 5,
+      review: "Monkey's old haunt when used to run the park in daylight. Clean pit stop and recovery meal of ALIEN and NOM NOM BURRITOs (vegan option)and COFFEE!..."
+    };
+
+    new BusinessReview(newRating).save()
+    done()
+  })
+  afterEach(function(done){
+    db.knex('BusinessReviews')
+      .where('business_id', 'sunrise-coffee-las-vegas-3')
+      .del()
+      .finally(function() {
+        knex.destroy();
+      })
+    // BusinessReview.where({business_id: 'sunrise-coffee-las-vegas-3'}).destroy()
+    done();
+  });
+
+  it('should list a SINGLE restaurant review/rating on /api/business/review GET', function(done) {
+     chai.request(business)
+      .get('/api/business/review')
+      .query({business_id: 'sunrise-coffee-las-vegas-3'})
+      .end(function(err, res) {
+        res.should.have.status(200)
+        done();
+        
+      })
+  });
   it('should add a SINGLE restaurant review/rating on /api/business/review POST');
+});
   it('should query Yelp for restaurant information and save info to DB /api/business/yelp POST');
