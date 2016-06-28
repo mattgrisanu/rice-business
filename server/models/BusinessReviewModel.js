@@ -4,7 +4,7 @@ db.knex.schema.hasTable('BusinessReviews').then(function (exists) {
   if (!exists) {
     db.knex.schema.createTable('BusinessReviews', function(business) {
       business.increments('id').primary();
-      business.string('business_id', 255).unique();
+      business.string('business_id', 255);
       business.string('user_id', 255);
       business.string('review', 255);
       business.float('rating')

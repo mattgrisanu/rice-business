@@ -61,8 +61,14 @@ module.exports = {
                 "state_code": "CA"
             }
         }
-        
+
     ]
-  }
+  },
+  review: {
+    clientId: 'katkat',
+    business_id: 'sunrise-coffee-las-vegas-3',
+    rating: 5,
+    review: "LALALA MONKIES"
+  } 
 }
        

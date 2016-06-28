@@ -29,7 +29,6 @@ module.exports = {
   addRating: function (req, res) {
     //assume req.body looks like above
     var rating = req.body;
-    console.log('THIS IS RATING from addRating----->', rating)
     var newRating = {
       business_id: rating.business_id,
       user_id: rating.clientId,
@@ -39,7 +38,6 @@ module.exports = {
 
     new BusinessReview(newRating).save()
       .then(function (saved) {
-        console.log('Sucessfully saved => ', saved);
         res.status(201).send('Add success');
       })
       .catch(function (err) {

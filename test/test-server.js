@@ -62,6 +62,7 @@ describe('BusinessDetail Routes', function() {
 });
 describe('BusinessReview Routes', function() {
   beforeEach(function(done) {
+    BusinessReview.where({business_id: 'sunrise-coffee-las-vegas-3'}).destroy()
 
     var newRating = {
       business_id: 'sunrise-coffee-las-vegas-3',
@@ -74,13 +75,14 @@ describe('BusinessReview Routes', function() {
     done()
   })
   afterEach(function(done){
-    db.knex('BusinessReviews')
-      .where('business_id', 'sunrise-coffee-las-vegas-3')
-      .del()
-      .finally(function() {
-        knex.destroy();
-      })
-    // BusinessReview.where({business_id: 'sunrise-coffee-las-vegas-3'}).destroy()
+    BusinessReview.where({business_id: 'sunrise-coffee-las-vegas-3'}).destroy()
+
+    // db.knex('BusinessReviews')
+    //   .where('business_id', 'sunrise-coffee-las-vegas-3')
+    //   .del()
+    //   .finally(function() {
+    //     knex.destroy();
+    //   })
     done();
   });
 
@@ -90,10 +92,31 @@ describe('BusinessReview Routes', function() {
       .query({business_id: 'sunrise-coffee-las-vegas-3'})
       .end(function(err, res) {
         res.should.have.status(200)
+        res.body.should.be.a('array')
+        res.body[0].should.have.property('rating')
+        res.body[0].should.have.property('review')
+        res.body[0].review.should.be.a('string')
         done();
         
       })
   });
-  it('should add a SINGLE restaurant review/rating on /api/business/review POST');
+  it('should add a SINGLE restaurant review/rating on /api/business/review POST', function(done) {
+    chai.request(business)
+      .post('/api/business/review')
+      .send(data.review)
+      .end(function(err, res) {
+        res.should.have.status(201);
+        done()
+      })
+  });
 });
-  it('should query Yelp for restaurant information and save info to DB /api/business/yelp POST');
+describe('Business Yelp Routes', function() {
+  it('should query Yelp for restaurant information and save info to DB /api/business/yelp POST', function(done) {
+    chai.request(business)
+      .post('/api/business/yelp')
+      .query()
+      .end(function(err,res) {
+        done()
+      })
+  });
+});
