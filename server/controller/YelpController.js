@@ -29,15 +29,14 @@ module.exports = {
     for(var i = 0; i < recs.length; i++) {
       recNames.push(recs[i].name)
     }
-
     var saveToDb = function (arr, count) {
-      if (arr === undefined || count === arr.length) {
-        if (res !== undefined) {
-          res.status(201).send('Add success');
-        }
-        return;
-      }
-      Yelp.search({term: arr[count], location: 'Las Vegas'})
+      // if (arr === undefined || count === arr.length) {
+      //   if (res !== undefined) {
+      //     res.status(201).send('Add success');
+      //   }
+      //   return;
+      // }
+      Yelp.search({term: arr[count], location: 'Las Vegas', limit: 1})
         .then(function(yelpData) {
           console.log('Got yelpData back from Yelp, sending to BusinessInfo To Add to Db')
           BusinessInfoController._addFromYelp(yelpData, res)

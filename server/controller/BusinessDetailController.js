@@ -9,7 +9,7 @@ module.exports = {
     var queryObj = {
       business_id: req.query.business_id
     }
-    BusinessDetail.where(queryObj).fetch()
+    BusinessDetail.where(queryObj).fetchAll()
       .then(function (foundDetail) {
         res.status(200).send(foundDetail);
       })
@@ -22,9 +22,9 @@ module.exports = {
   _saveDetails: function (business_id, categoriesArr, neighborhoodsArr, res, fromYelp) {
     var saveToDb = function (arr, count, type) {
       if (arr === undefined || count === arr.length) {
-        if (!fromYelp) {
-          res.status(201).send('Add success');
-        }
+        if (res !== undefined) {
+          res.status(201).send('Add success!!');
+        }        
         return;
       }
 
@@ -36,7 +36,6 @@ module.exports = {
 
       new BusinessDetail(newDetail).save()
         .then(function (saved) {
-          console.log('Successfull saved BusinessDetail', saved);
           saveToDb(arr, ++count, type);
         })
         .catch(function (err) {
