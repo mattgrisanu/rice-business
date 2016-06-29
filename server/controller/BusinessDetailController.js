@@ -22,9 +22,9 @@ module.exports = {
   _saveDetails: function (business_id, categoriesArr, neighborhoodsArr, res, fromYelp) {
     var saveToDb = function (arr, count, type) {
       if (arr === undefined || count === arr.length) {
-        if (!fromYelp) {
-          res.status(201).send('Add success');
-        }
+        if (res !== undefined) {
+          res.status(201).send('Add success!!');
+        }        
         return;
       }
 

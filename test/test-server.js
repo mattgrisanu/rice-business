@@ -10,40 +10,40 @@ var db = require('./../server/config/db')
 
 chai.use(chaiHttp);
 
-describe('BusinessInfo Routes', function() {
+// describe('BusinessInfo Routes', function() {
 
-  afterEach(function(done){
-    BusinessInfo.where({name: 'Tadu Ethiopian Kitchen'}).destroy()
-    BusinessDetail.where({business_id: 'tadu-ethiopian-kitchen-san-francisco-3'}).destroy()
-    done();
-  });
+//   afterEach(function(done){
+//     BusinessInfo.where({name: 'Tadu Ethiopian Kitchen'}).destroy()
+//     BusinessDetail.where({business_id: 'tadu-ethiopian-kitchen-san-francisco-3'}).destroy()
+//     done();
+//   });
 
-  it('should add a SINGLE restaurant on /api/business/info POST', function(done) {
-    chai.request(business)
-    .post('/api/business/info')
-    .send(data.yelp)
-    .end(function(err, res) {
-      res.should.have.status(201);
-      res.should.be.a('object')
-      done()
-    })
-  });
-  it('should list a SINGLE restaurant on /api/business/info GET', function(done) {
-    chai.request(business)
-      .get('/api/business/info')
-      .query({business_id: 'sunrise-coffee-las-vegas-3'})
-      .end(function(err, res) {
-        res.should.have.status(200);
-        res.body.should.be.a('object');
-        res.body.should.have.property('name')
-        res.body.should.have.property('phone')
-        res.body.should.have.property('address')
-        res.body.should.have.property('rating')
-        res.body.rating.should.equal(4.5)
-        done();
-      })
-  });
-});
+//   it('should add a SINGLE restaurant on /api/business/info POST', function(done) {
+//     chai.request(business)
+//     .post('/api/business/info')
+//     .send(data.yelp)
+//     .end(function(err, res) {
+//       res.should.have.status(201);
+//       res.should.be.a('object')
+//       done()
+//     })
+//   });
+//   it('should list a SINGLE restaurant on /api/business/info GET', function(done) {
+//     chai.request(business)
+//       .get('/api/business/info')
+//       .query({business_id: 'sunrise-coffee-las-vegas-3'})
+//       .end(function(err, res) {
+//         res.should.have.status(200);
+//         res.body.should.be.a('object');
+//         res.body.should.have.property('name')
+//         res.body.should.have.property('phone')
+//         res.body.should.have.property('address')
+//         res.body.should.have.property('rating')
+//         res.body.rating.should.equal(4.5)
+//         done();
+//       })
+//   });
+// });
 describe('BusinessDetail Routes', function() {
 
   it('should list a SINGLE restaurant category/neighborhood information on /api/business/detail GET', function(done) {
@@ -76,13 +76,11 @@ describe('BusinessReview Routes', function() {
   })
   afterEach(function(done){
     BusinessReview.where({business_id: 'sunrise-coffee-las-vegas-3'}).destroy()
+    
+    // BusinessInfo.where({name: 'TACOS EL GORDO'}).destroy()
+    // BusinessDetail.where({business_id: 'tacos-el-gordo-las-vegas'}).destroy()
+   
 
-    // db.knex('BusinessReviews')
-    //   .where('business_id', 'sunrise-coffee-las-vegas-3')
-    //   .del()
-    //   .finally(function() {
-    //     knex.destroy();
-    //   })
     done();
   });
 
@@ -106,16 +104,27 @@ describe('BusinessReview Routes', function() {
       .send(data.review)
       .end(function(err, res) {
         res.should.have.status(201);
+        res.should.have.property('text');
+        res.text.should.equal('Add success')
         done()
       })
   });
 });
 describe('Business Yelp Routes', function() {
+  afterEach(function(done){
+    BusinessInfo.where({name: 'TACOS EL GORDO'}).destroy()
+    BusinessDetail.where({business_id: 'tacos-el-gordo-las-vegas'}).destroy()
+    done();
+  });
+
   it('should query Yelp for restaurant information and save info to DB /api/business/yelp POST', function(done) {
     chai.request(business)
       .post('/api/business/yelp')
-      .query()
+      .send(data.recommendation)
       .end(function(err,res) {
+        res.should.have.status(201);
+        res.should.have.property('text');
+        res.text.should.equal('Add success!!')
         done()
       })
   });

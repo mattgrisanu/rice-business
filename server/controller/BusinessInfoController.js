@@ -142,8 +142,10 @@ module.exports = {
       phone: business.phone,
       is_closed: business.is_closed
     };
+    console.log(newBusiness)
     BusinessInfo.where({business_id: business.id}).fetch()
       .then(function(foundBusiness) {
+        console.log("INSIDE businessInfo from yelp---->", foundBusiness)
         if(foundBusiness === null) {
           new BusinessInfo(newBusiness).save()
             .then(function (saved) {
@@ -155,7 +157,7 @@ module.exports = {
               console.error('Error: Saving to database', err);
               res.status(500).send(err);
             })
-        } else {
+        } else {  
           console.error('Business already added')
         }
       })

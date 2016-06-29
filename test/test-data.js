@@ -69,6 +69,15 @@ module.exports = {
     business_id: 'sunrise-coffee-las-vegas-3',
     rating: 5,
     review: "LALALA MONKIES"
-  } 
+  },
+  recommendation: {
+    items: [{
+      cuisine: "cafes",
+      id: "unlessstring",
+      name: "TACOS EL GORDO",
+      rating: 0.20202,
+      userRated: false
+    }]
+  }  
 }
        
