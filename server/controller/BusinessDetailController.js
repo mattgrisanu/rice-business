@@ -19,32 +19,43 @@ module.exports = {
       });
   },
 
-  _saveDetails: function (business_id, categoriesArr, neighborhoodsArr, res, fromYelp) {
-    var saveToDb = function (arr, count, type) {
-      if (arr === undefined || count === arr.length) {
-        if (res !== undefined) {
-          res.status(201).send('Add success!!');
-        }        
+  _saveDetails: function (business_id, categoriesArr, neighborhoodsArr, shouldSend, res) {
+    var saveToDb = function (categories, neighborhoods, count) {
+      var type, value;
+      var numberOfCategories = categories.length
+      var numberOfNeighborhoods = neighborhoods.length;
+
+      if (count === numberOfNeighborhoods + numberOfCategories) {   
+        if (shouldSend) {
+          res.status(201).send('Add Business sucessful!')
+        }   
         return;
+      }
+
+      if (count < numberOfCategories) {
+        type = 'category';
+        value = categories[count];
+      } else {
+        type = 'neighborhood';
+        value = neighborhoods[count - numberOfCategories];
       }
 
       var newDetail = {
         business_id: business_id,
         type: type,
-        value: arr[count]
+        value: value
       };
 
       new BusinessDetail(newDetail).save()
         .then(function (saved) {
-          saveToDb(arr, ++count, type);
+          saveToDb(categoriesArr, neighborhoodsArr, ++count);
         })
         .catch(function (err) {
           console.error('Error: Saving BusinessDetail to the database', err);
         });
     };
 
-    saveToDb(categoriesArr, 0, 'category');
-    saveToDb(neighborhoodsArr, 0, 'neighborhood');
+    saveToDb(categoriesArr, neighborhoodsArr, 0);
   }
 
 };

@@ -87,6 +87,21 @@ module.exports = {
       });
   },
 
+  checkBus: function (name) {
+    //assuming req.param looks like { name: this.props.restaurantId/name }
+    var queryObj = {
+      name: name
+    }
+    return BusinessInfo.where(queryObj).fetch()
+      // .then(function (foundBusiness) {
+      //   // res.status(200).send(foundBusiness);
+      // })
+      // .catch(function (err) {
+      //   console.error('Error: Fetching '+ req.params.name + ' from db', err);
+      //   res.status(500).send(err);
+      // });
+  },
+
   addBusiness: function (req, res) {
     //assume req.body is looking and coming from yelp api
     var business = req.body.businesses[0];
@@ -121,7 +136,7 @@ module.exports = {
         res.status(500).send(err);
       })
   },
-   _addFromYelp: function(yelpData, res) {
+   _addFromYelp: function(yelpData, shouldSend, res) {
     var business = yelpData.businesses[0];
     var neighborhoodsArr = business.location.neighborhoods;
     var categoriesArr = [];
@@ -142,28 +157,18 @@ module.exports = {
       phone: business.phone,
       is_closed: business.is_closed
     };
-    console.log(newBusiness)
-    BusinessInfo.where({business_id: business.id}).fetch()
-      .then(function(foundBusiness) {
-        console.log("INSIDE businessInfo from yelp---->", foundBusiness)
-        if(foundBusiness === null) {
-          new BusinessInfo(newBusiness).save()
-            .then(function (saved) {
-              console.log('Sucessfully saved => ', saved);
-              BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, res, true);
 
-            })
-            .catch(function (err) {
-              console.error('Error: Saving to database', err);
-              res.status(500).send(err);
-            })
-        } else {  
-          console.error('Business already added')
-        }
+   
+    new BusinessInfo(newBusiness).save()
+      .then(function (saved) {
+        console.log('Sucessfully saved => ', saved);
+        BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, shouldSend, res);
+
       })
       .catch(function (err) {
-        console.error('Error: Fetching BusinessInfo' , err);
-        res.status(500).send(err);
-      });
-  }
+        console.error('Error: Saving to database', err);
+        // res.status(500).send(err);
+      })
+    }
+
 };
