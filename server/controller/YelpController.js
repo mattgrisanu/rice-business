@@ -4,8 +4,8 @@ var BusinessInfoController = require('./BusinessInfoController.js');
 // var PreferenceController = require('./../controller/PreferenceController.js');
 
 /* assume coming from rec
-  {
-    items: [{
+  { 
+    response: [{
       cuisine: "cafes",
       id: "unlessstring",
       name: "The Beat Coffeehouse & Records",
@@ -24,7 +24,7 @@ var BusinessInfoController = require('./BusinessInfoController.js');
 
 module.exports = {
   queryYelp: function(req, res) {
-    var recs = req.body.items
+    var recs = req.body.response
     var recNames = [];
     for(var i = 0; i < recs.length; i++) {
       recNames.push(recs[i].name)
