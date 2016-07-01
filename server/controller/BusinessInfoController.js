@@ -72,11 +72,10 @@ assuming we yelp api searched returned json
 
 module.exports = {
   getInfo: function (req, res) {
-    //assuming req.param looks like { name: this.props.restaurantId/name }
     var queryObj = {
-      business_id: req.query.business_id
+      name: req.query.name
     }
-    console.log('PARAMS in GET INFO --------->', req.query.business_id)
+    console.log('PARAMS in GET INFO --------->', req.query.name)
     BusinessInfo.where(queryObj).fetch()
       .then(function (foundBusiness) {
         res.status(200).send(foundBusiness);
