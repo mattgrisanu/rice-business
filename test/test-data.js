@@ -71,7 +71,7 @@ module.exports = {
     review: "LALALA MONKIES"
   },
   recommendation: {
-    items: [{
+    response: [{
       cuisine: "cafes",
       id: "unlessstring",
       name: "TACOS EL GORDO",
