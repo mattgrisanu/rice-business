@@ -87,54 +87,12 @@ module.exports = {
   },
 
   checkBus: function (name) {
-    //assuming req.param looks like { name: this.props.restaurantId/name }
     var queryObj = {
       name: name
     }
     return BusinessInfo.where(queryObj).fetch()
-      // .then(function (foundBusiness) {
-      //   // res.status(200).send(foundBusiness);
-      // })
-      // .catch(function (err) {
-      //   console.error('Error: Fetching '+ req.params.name + ' from db', err);
-      //   res.status(500).send(err);
-      // });
   },
 
-  addBusiness: function (req, res) {
-    //assume req.body is looking and coming from yelp api
-    var business = req.body.businesses[0];
-    var neighborhoodsArr = business.location.neighborhoods;
-    var categoriesArr = [];
-    for(var i = 0; i < business.categories.length; i++) {
-      categoriesArr.push(business.categories[i][0])
-    }
-    //might need forloop over req.body.businesses is an array
-    var newBusiness = {
-      business_id: business.id,
-      name: business.name,
-      address: business.location.display_address[0],
-      city: business.location.city,
-      state: business.location.state_code,
-      latitude: business.location.coordinate.latitude,
-      longitude: business.location.coordinate.longitude,
-      rating: business.rating,
-      review_count: business.review_count,
-      phone: business.phone,
-      is_closed: business.is_closed
-    };
-
-    new BusinessInfo(newBusiness).save()
-      .then(function (saved) {
-        console.log('Sucessfully saved => ', saved);
-        BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, res, false);
-
-      })
-      .catch(function (err) {
-        console.error('Error: Saving to database', err);
-        res.status(500).send(err);
-      })
-  },
    _addFromYelp: function(yelpData, shouldSend, res) {
     var business = yelpData.businesses[0];
     var neighborhoodsArr = business.location.neighborhoods;
@@ -142,7 +100,6 @@ module.exports = {
     for(var i = 0; i < business.categories.length; i++) {
       categoriesArr.push(business.categories[i][1])
     }
-    //might need forloop over req.body.businesses is an array
     var newBusiness = {
       business_id: business.id,
       name: business.name,
@@ -166,7 +123,6 @@ module.exports = {
       })
       .catch(function (err) {
         console.error('Error: Saving to database', err);
-        // res.status(500).send(err);
       })
     }
 
