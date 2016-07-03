@@ -10,4 +10,4 @@ RUN npm install -q
 
 EXPOSE 3002
 
-CMD npm start
+CMD npm run start_prod
