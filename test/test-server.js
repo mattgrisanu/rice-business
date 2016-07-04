@@ -21,7 +21,7 @@ describe('BusinessInfo Routes', function() {
   it('should list a SINGLE restaurant on /api/business/info GET', function(done) {
     chai.request(business)
       .get('/api/business/info')
-      .query({business_id: 'sunrise-coffee-las-vegas-3'})
+      .query({name: 'Sunrise Coffee'})
       .end(function(err, res) {
         res.should.have.status(200);
         res.body.should.be.a('object');
