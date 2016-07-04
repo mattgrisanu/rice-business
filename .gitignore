@@ -37,6 +37,5 @@ jspm_packages
 .node_repl_history
 
 
-server/config/yelp.js
 server/env/development.env
 server/env/production.env
