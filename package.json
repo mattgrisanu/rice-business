@@ -6,7 +6,7 @@
   "scripts": {
     "test": "NODE_ENV=development mocha",
     "start": "NODE_ENV=development nodemon server/server.js",
-    "start_prod": "NODE_ENV=production nodemon server/server.js",
+    "start_prod": "NODE_ENV=production node server/server.js",
     "drop": "NODE_ENV=development node server/lib/dropAllTables.js"
 
   },
