@@ -3,6 +3,7 @@ if (process.env.NODE_ENV === 'development') {
   require('dotenv').config({ path: './server/env/development.env' });
 } else if (process.env.NODE_ENV === 'production') {
   require('dotenv').config({ path: '../env/production.env' });
+  // require('dotenv').config({ path: './server/env/production.env' });
 }
 
 var express = require('express');

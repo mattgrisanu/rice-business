@@ -4,7 +4,7 @@ RUN mkdir /src
 
 WORKDIR /src
 COPY . /src
-RUN npm install -q
+RUN npm install
 
 EXPOSE 3002
 
