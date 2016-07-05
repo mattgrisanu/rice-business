@@ -13,7 +13,7 @@ require('./config/initialize.js')(app, express);
 
 require('./routes/api-routes.js')(app);
 
-app.listen(3002, process.env.HOST, function() {
+app.listen(3002, function() {
   console.log('NODE_ENV: ' + process.env.NODE_ENV);
   console.log(process.env.APP_NAME + ' is listening at ' + process.env.HOST + ' on port ' + process.env.PORT + '.')
 });
