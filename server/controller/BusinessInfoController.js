@@ -100,6 +100,7 @@ module.exports = {
     for(var i = 0; i < business.categories.length; i++) {
       categoriesArr.push(business.categories[i][1])
     }
+    console.log("IN add from Yelp", yelpData, business.location)
     var newBusiness = {
       business_id: business.id,
       name: business.name,
@@ -115,7 +116,7 @@ module.exports = {
     };
 
    
-    new BusinessInfo(newBusiness).save()
+    return new BusinessInfo(newBusiness).save()
       .then(function (saved) {
         console.log('Sucessfully saved => ', saved);
         BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, shouldSend, res);
@@ -123,7 +124,7 @@ module.exports = {
       })
       .catch(function (err) {
         console.error('Error: Saving to database', err);
-      })
+      });
     }
 
 };
