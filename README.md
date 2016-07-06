@@ -3,17 +3,17 @@ Rice business provides and serves restaurant and rating information for Rice.
 
 ## Table of Contents
 1. [Getting started](#Getting-Started)
-  1. [Clone the latest version](#Installing-Dependencies)
-  2. [Install Dependencies](#Installing-Dependencies)
-  3. [Setup Environment Variables](#Environment-Variables)
-  4. [Start the application](#Start-application)
+  1. Clone the latest version
+  2. Install Dependencies
+  3. Setup Environment Variables
+  4. Start the application
 2. [Setup Database](#database)
 3. [Technologies] (#Technologies)
 4. [Architecture](#Architecture)
 5. [API Endpoints](#Endpoint)
 
 
-## Getting started
+## <a id="Getting-Started"></a> Getting Started
 #### 1. Clone the latest version
 
   Start by cloning the latest version of rice-business on your local machine by running:
@@ -59,7 +59,7 @@ Rice business provides and serves restaurant and rating information for Rice.
     $ npm test
     ```
     
-## Setup Database
+## <a id="database"></a>Setup Database
 1. Start a mySQL server:
 
     ```
@@ -102,7 +102,7 @@ To see privileges on the account you've just created:
     $ npm run drop
     ```
     
-## Technologies
+## <a id="Technologies"></a>Technologies
 
 ##### Back end:
 - Node
@@ -120,7 +120,7 @@ To see privileges on the account you've just created:
 - Amazon EC2 Instance
 - Docker
 
-## Architecture
+## <a id="Architecture"></a>Architecture
 
 ### Directory Layout
 ```
@@ -138,9 +138,10 @@ To see privileges on the account you've just created:
 │   ├── /test-data.js           # Holds seed & dummy data
 │   ├── /test-server.js         # Server side tests
 └── package.json                # List of 3rd party libraries and utilities to be installed
-└── Dockerfile                  # Docker build file
+└── .babelrc                    # Babel presets
+└── .eslintrc                   # ESLint settings
 ```
-## Users Service API Endpoints
+## <a id="Endpoint"></a>Users Service API Endpoints
 
 `GET` /api/business/info  
 `GET` /api/business/review  
