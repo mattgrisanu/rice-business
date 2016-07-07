@@ -19,7 +19,7 @@ module.exports = {
       });
   },
 
-  _saveDetails: function (business_id, categoriesArr, neighborhoodsArr, shouldSend, sendData, res) {
+  _saveDetails: function (business_id, categoriesArr, neighborhoodsArr) {
     var saveToDb = function (categories, neighborhoods, count) {
       var type, value;
       var numberOfCategories = categories.constructor === Array ? categories.length : 0;
@@ -43,9 +43,6 @@ module.exports = {
         .then(function (saved) {
           count++;
           if (count === numberOfNeighborhoods + numberOfCategories) {   
-            if (shouldSend) {
-              res.status(201).send(sendData)
-            }   
             return saved;
           }
 
