@@ -19,18 +19,11 @@ module.exports = {
       });
   },
 
-  _saveDetails: function (business_id, categoriesArr, neighborhoodsArr, shouldSend, res) {
+  _saveDetails: function (business_id, categoriesArr, neighborhoodsArr, shouldSend, sendData, res) {
     var saveToDb = function (categories, neighborhoods, count) {
       var type, value;
       var numberOfCategories = categories.length
       var numberOfNeighborhoods = neighborhoods.length;
-
-      if (count === numberOfNeighborhoods + numberOfCategories) {   
-        if (shouldSend) {
-          res.status(201).send('Add Business sucessful!')
-        }   
-        return;
-      }
 
       if (count < numberOfCategories) {
         type = 'category';
@@ -46,16 +39,24 @@ module.exports = {
         value: value
       };
 
-      new BusinessDetail(newDetail).save()
+      return new BusinessDetail(newDetail).save()
         .then(function (saved) {
-          saveToDb(categoriesArr, neighborhoodsArr, ++count);
+          count++;
+          if (count === numberOfNeighborhoods + numberOfCategories) {   
+            if (shouldSend) {
+              res.status(201).send(sendData)
+            }   
+            return saved;
+          }
+
+          saveToDb(categoriesArr, neighborhoodsArr, count);
         })
         .catch(function (err) {
           console.error('Error: Saving BusinessDetail to the database', err);
         });
     };
 
-    saveToDb(categoriesArr, neighborhoodsArr, 0);
+    return saveToDb(categoriesArr, neighborhoodsArr, 0);
   }
 
 };

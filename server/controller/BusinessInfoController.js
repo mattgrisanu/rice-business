@@ -93,13 +93,14 @@ module.exports = {
     return BusinessInfo.where(queryObj).fetch()
   },
 
-   _addFromYelp: function(yelpData, shouldSend, res) {
+   _addFromYelp: function(yelpData, shouldSend, sendData, res) {
     var business = yelpData.businesses[0];
     var neighborhoodsArr = business.location.neighborhoods;
     var categoriesArr = [];
     for(var i = 0; i < business.categories.length; i++) {
       categoriesArr.push(business.categories[i][1])
     }
+    // console.log("IN add from Yelp", yelpData, business.location)
     var newBusiness = {
       business_id: business.id,
       name: business.name,
@@ -115,15 +116,15 @@ module.exports = {
     };
 
    
-    new BusinessInfo(newBusiness).save()
+    return new BusinessInfo(newBusiness).save()
       .then(function (saved) {
         console.log('Sucessfully saved => ', saved);
-        BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, shouldSend, res);
+        return BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, shouldSend, sendData, res);
 
       })
       .catch(function (err) {
         console.error('Error: Saving to database', err);
-      })
+      });
     }
 
 };
