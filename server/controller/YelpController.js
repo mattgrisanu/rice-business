@@ -24,10 +24,10 @@ var BusinessInfoController = require('./BusinessInfoController.js');
 
 var _checkifValid = function (yelpData, business_name) {
   if (yelpData.businesses.length > 0 && yelpData.businesses[0].name === business_name) {
-    // console.log('valid YELP');
+    console.log('valid YELP');
     return true;
   } else {
-    // console.log('invalid YELP', yelpData, business_name);
+    console.log('invalid YELP', yelpData, business_name);
     return false;
   }
 };
@@ -75,24 +75,24 @@ module.exports = {
     var count = 0;
     var validYelp = [];
     var shouldSend = false;
-    
+    console.log("RECS ===============>", req.body)
     for(var i = 0; i < recs.length; i++) {
       recNames.push(recs[i].name)
     }
 
-    var _handleYelpSaveAndRes = function (all_business_names) {
+    var _handleYelpSaveAndRes = function (all_business_names, validYelpBusinesses) {
       if (count === all_business_names.length) {
         return;
       }
 
-      _shouldSaveToDb(all_business_names[count], [])
+      _shouldSaveToDb(all_business_names[count], validYelpBusinesses)
         .then(function (matchedBusiness) {
           if(count === recNames.length -1) {
             shouldSend = true
           }
-          // console.log('valid YELP => business', matchedBusiness);
-          // console.log('valid YELP => count', count);
-          // console.log('valid YELP => shouldSend', shouldSend);
+          console.log('valid YELP => business', matchedBusiness);
+          console.log('valid YELP => count', count);
+          console.log('valid YELP => shouldSend', shouldSend);
 
           if (matchedBusiness[0] === null && 
               matchedBusiness[1] !== null) { // valid yelp and business
@@ -106,7 +106,8 @@ module.exports = {
                   // then call next
                   .then(function () {
                     ++count;
-                    _shouldSaveToDb(all_business_names[count], matchedBusiness[2]);
+                    validYelpBusinesses = validYelpBusinesses.concat(matchedBusiness[2]);
+                    _shouldSaveToDb(all_business_names[count], validYelpBusinesses);
                   })
 
           } else { // invalid yelp or business
@@ -117,7 +118,7 @@ module.exports = {
             } else {
               // not last loop
               ++count;
-              _handleYelpSaveAndRes(all_business_names);
+              _handleYelpSaveAndRes(all_business_names, validYelpBusinesses);
             }
           }
         })
@@ -126,7 +127,7 @@ module.exports = {
         })
     }
 
-    _handleYelpSaveAndRes(recNames);
+    _handleYelpSaveAndRes(recNames, []);
         
   }
 };
