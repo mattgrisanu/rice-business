@@ -25,7 +25,7 @@ var unique = require('./../lib/utils').unique;
 
 var _checkifValid = function (yelpData, business_name) {
   if (yelpData.businesses.length > 0 && yelpData.businesses[0].name === business_name) {
-    console.log('valid YELP');
+    console.log('valid YELP', business_name);
     return true;
   } else {
     console.log('invalid YELP', yelpData, business_name);
@@ -86,24 +86,19 @@ module.exports = {
       (function (business_name) {
         _shouldSaveToDb(business_name)
           .then(function (matchedBusiness) {
-            // if(numberCompleted === recNames.length -1) {
-            //   shouldSend = true
-            // }
-            // console.log('valid YELP => business', matchedBusiness[0]);
-            // console.log('valid YELP => count', matchedBusiness[1]);
-            // console.log('valid YELP => shouldSend', matchedBusiness[2]);
 
             if (matchedBusiness[0] === null && // not in db
                 matchedBusiness[1] !== null) { // valid yelp and business
               // save
-                console.log('valid YELP => saving to db', business_name);
+                // console.log('valid YELP => saving to db', business_name);
                 BusinessInfoController
                   ._addFromYelp(matchedBusiness[1])
                     // then call next
                     .then(function () {
                       numberCompleted++;
                       validYelp = validYelp.concat(matchedBusiness[1].businesses[0].name);
-                      console.log('all my valid yelps =>', validYelp);
+                      // console.log('all my valid yelps =>', validYelp);
+
                       if (numberCompleted === recNames.length) {
                         res.status(201).send(unique(validYelp));
                       }
@@ -127,55 +122,5 @@ module.exports = {
           })
       }) (recNames[yelpBusiness]);
     }
-
-    // var _handleYelpSaveAndRes = function (all_business_names, validYelpBusinesses) {
-    //   if (count === all_business_names.length) {
-    //     return;
-    //   }
-
-    //   _shouldSaveToDb(all_business_names[count], validYelpBusinesses)
-    //     .then(function (matchedBusiness) {
-    //       if(count === recNames.length -1) {
-    //         shouldSend = true
-    //       }
-    //       console.log('valid YELP => business', matchedBusiness);
-    //       console.log('valid YELP => count', count);
-    //       console.log('valid YELP => shouldSend', shouldSend);
-
-    //       if (matchedBusiness[0] === null && 
-    //           matchedBusiness[1] !== null) { // valid yelp and business
-    //         // save
-    //           console.log('valid YELP => saving to db');
-    //           BusinessInfoController
-    //             ._addFromYelp(matchedBusiness[1], 
-    //                           shouldSend, 
-    //                           matchedBusiness[2], 
-    //                           res)
-    //               // then call next
-    //               .then(function () {
-    //                 ++count;
-    //                 validYelpBusinesses = validYelpBusinesses.concat(matchedBusiness[2]);
-    //                 _shouldSaveToDb(all_business_names[count], validYelpBusinesses);
-    //               })
-
-    //       } else { // invalid yelp or business
-    //         // send if shouldSend === true
-    //         // if not call next
-    //         if (shouldSend) {
-    //           res.status(201).send(matchedBusiness[2]);
-    //         } else {
-    //           // not last loop
-    //           ++count;
-    //           _handleYelpSaveAndRes(all_business_names, validYelpBusinesses);
-    //         }
-    //       }
-    //     })
-    //     .catch(function (err) {
-    //       console.error('Error: In _shouldSaveToDb with ', all_business_names[count]);
-    //     })
-    // }
-
-    // _handleYelpSaveAndRes(recNames, []);
-        
   }
 };
