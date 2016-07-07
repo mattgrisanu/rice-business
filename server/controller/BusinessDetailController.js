@@ -19,7 +19,7 @@ module.exports = {
       });
   },
 
-  _saveDetails: function (business_id, categoriesArr, neighborhoodsArr, shouldSend, res) {
+  _saveDetails: function (business_id, categoriesArr, neighborhoodsArr, shouldSend, sendData, res) {
     var saveToDb = function (categories, neighborhoods, count) {
       var type, value;
       var numberOfCategories = categories.length
@@ -27,7 +27,7 @@ module.exports = {
 
       if (count === numberOfNeighborhoods + numberOfCategories) {   
         if (shouldSend) {
-          res.status(201).send('Add Business sucessful!')
+          res.status(201).send(sendData)
         }   
         return;
       }

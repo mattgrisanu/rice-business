@@ -93,7 +93,7 @@ module.exports = {
     return BusinessInfo.where(queryObj).fetch()
   },
 
-   _addFromYelp: function(yelpData, shouldSend, res) {
+   _addFromYelp: function(yelpData, shouldSend, sendData, res) {
     var business = yelpData.businesses[0];
     var neighborhoodsArr = business.location.neighborhoods;
     var categoriesArr = [];
@@ -119,7 +119,7 @@ module.exports = {
     return new BusinessInfo(newBusiness).save()
       .then(function (saved) {
         console.log('Sucessfully saved => ', saved);
-        BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, shouldSend, res);
+        BusinessDetailController._saveDetails(business.id, categoriesArr, neighborhoodsArr, shouldSend, sendData, res);
 
       })
       .catch(function (err) {

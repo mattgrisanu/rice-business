@@ -22,71 +22,92 @@ var BusinessInfoController = require('./BusinessInfoController.js');
   }       
 */
 
+var _checkifValid = function (yelpData, business_name) {
+  if (yelpData.businesses.length > 0 && yelpData.businesses[0].name === business_name) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+var _isValidYelp = function (business_name) {
+  return Yelp.search({term: business_name, location: 'Las Vegas', limit: 1})
+    .then(function (yelpData) {
+      if (_checkifValid(yelpData, business_name)) {
+        return yelpData
+      } else {
+        return false;
+      }
+    })
+    .catch(function (err) {
+      console.error('Error: Cannot complete Yelp query with business_name = ', name);
+    });
+};
+
+var _shouldSaveToDb = function (business_name, allValidYelp) {
+  return _isValidYelp(business_name)
+    .then(function (data) {
+      if (data) {
+        allValidYelp.push(business_name);
+        return BusinessInfoController.checkBus(business_name)
+          .then(function(found) {
+            return [found, data, allValidYelp];
+          })
+          .catch(function (err) {
+            console.error('Error: Cannot match ', business_name, ' in BusinessInfo db');
+          })
+      } else {
+        return [null, null, allValidYelp];
+      }
+    })
+    .catch(function (err) {
+      console.error('Error: Cannot complete Yelp query with business_name = ', name);
+    })
+};
+
 module.exports = {
   queryYelp: function(req, res) {
     var recs = req.body.response
     var recNames = [];
-    var count = 0
+    var count = 0;
+    var validYelp = [];
     var shouldSend = false;
-    var newRecNames = []
     
     for(var i = 0; i < recs.length; i++) {
       recNames.push(recs[i].name)
     }
 
-    // console.log('All recs =>', recNames);
+    var _handleYelpSaveAndRes = function (all_business_names) {
+      count++;
+      _shouldSaveToDb(all_business_names[count], [])
+        .then(function (matchedBusiness) {
+          if(count === recNames.length -1) {
+            shouldSend = true
+          }
 
-    var _checkifValid = function (yelpData, business) {
-      if (yelpData.businesses.length > 0 || yelpData.businesses[0].name === business) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-     // Yelp.search({term: recNames[0], location: 'Las Vegas', limit: 1}) // name maybe an invalid yelp query term => handle error and continue
-     //  .then(function(yelpData) {
-     //    console.log('working api keys')
-     //  })
+          if (matchedBusiness[0] !== null && matchedBusiness[1] !== null) { // valid yelp
+            // save
+              // then call next
 
-    var _searchYelp = function (names) {
-      console.log('at cycle =>', count, '/', recNames.length)
-      if(count === recNames.length) {
-        return;
-      }
-      console.log('querying ', names[count], 'on yelp');
-      Yelp.search({term: names[count], location: 'Las Vegas', limit: 1}) // name maybe an invalid yelp query term => handle error and continue
-      .then(function(yelpData) {
-         count++;
-         if (_checkifValid(yelpData, names[count])) {
-            console.log('valid =>', count);
-            BusinessInfoController.checkBus(names[count])
-              .then(function(found) {
-                if(count === recNames.length -1) {
-                  shouldSend = true
-                }
-                
-                if(found === null) { // not in db
-                  // console.log('Got yelpData back from Yelp, sending to BusinessInfo To Add to Db =>', name);
-                  console.log('not found in db =>', count);
-                  BusinessInfoController._addFromYelp(yelpData, shouldSend, res)
-                    .then(function (saved) {
-                      _searchYelp(names);
-                    })
-                } else if (found !== null && shouldSend) {
-                  res.status(201).send('Add Business sucessful!');
-                }
-              })
-          } else {
-           return _searchYelp(names);
-         }
-         
+          } else { // invalid yelp
+            // send if shouldSend === true
+            // if not call next
+            if () {
+
+            } else {
+
+            }
+          }
+          if (matchedBusiness[0].length === null) {
+            BusinessInfoController._addFromYelp(matchedBusiness[1], shouldSend, matchedBusiness[2], res);
+          } else if (matchedBusiness[0].length !== null && shouldSend) {
+
+          }
         })
-      .catch(function(err) {
-        console.error(err, 'Error from posting to Yelp Search Api from', name);
-      })
-    };
+    }
 
-    _searchYelp(recNames);
+    _handleYelpSaveAndRes(recNames);
+    
     // for(var j = 0; j < recNames.length; j++) {
     //   (function (name) {
     //     console.log('Querying on Yelp =>', name);
