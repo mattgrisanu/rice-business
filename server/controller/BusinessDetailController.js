@@ -22,8 +22,8 @@ module.exports = {
   _saveDetails: function (business_id, categoriesArr, neighborhoodsArr, shouldSend, sendData, res) {
     var saveToDb = function (categories, neighborhoods, count) {
       var type, value;
-      var numberOfCategories = categories.length
-      var numberOfNeighborhoods = neighborhoods.length;
+      var numberOfCategories = categories.constructor === Array ? categories.length : 0;
+      var numberOfNeighborhoods = neighborhoods.constructor === Array ? neighborhoods.length : 0;
 
       if (count < numberOfCategories) {
         type = 'category';
