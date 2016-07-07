@@ -107,9 +107,13 @@ To see privileges on the account you've just created:
 ##### Back end:
 - Node
 - Express
+
+##### Database:
 - Bookshelf/Knex
 - MySQL
-- -Yelp
+- 
+##### API:
+- Yelp
 
 ##### Testing:
 - Mocha
@@ -117,7 +121,8 @@ To see privileges on the account you've just created:
 
 
 ##### Deployment:
-- Amazon EC2 Instance
+- AWS EC2
+- AWS RDS
 - Docker
 
 ## <a id="Architecture"></a>Architecture
@@ -141,7 +146,7 @@ To see privileges on the account you've just created:
 └── .babelrc                    # Babel presets
 └── .eslintrc                   # ESLint settings
 ```
-## <a id="Endpoint"></a>Users Service API Endpoints
+## <a id="Endpoint"></a>Business Service API Endpoints
 
 `GET` /api/business/info  
 `GET` /api/business/review  
