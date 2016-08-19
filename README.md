@@ -111,7 +111,7 @@ To see privileges on the account you've just created:
 ##### Database:
 - Bookshelf/Knex
 - MySQL
-- 
+
 ##### API:
 - Yelp
 
